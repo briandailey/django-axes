@@ -57,6 +57,8 @@ LOGGER = getattr(settings, 'AXES_LOGGER', 'axes.watch_login')
 LOCKOUT_TEMPLATE = getattr(settings, 'AXES_LOCKOUT_TEMPLATE', None)
 VERBOSE = getattr(settings, 'AXES_VERBOSE', True)
 
+ALWAYS_RECORD_USER = getattr(settings, 'AXES_ALWAYS_RECORD_USER', False):
+
 # whitelist and blacklist
 # todo: convert the strings to IPv4 on startup to avoid type conversion during processing
 ONLY_WHITELIST = getattr(settings, 'AXES_ONLY_ALLOW_WHITELIST', False)
@@ -411,7 +413,8 @@ def create_new_failure_records(request, failures):
     }
 
     # record failed attempt from this IP
-    AccessAttempt.objects.create(**params)
+    if not ALWAYS_RECORD_USER:
+        AccessAttempt.objects.create(**params)
 
     # record failed attempt on this username from untrusted IP
     params.update({
