@@ -419,11 +419,12 @@ def create_new_failure_records(request, failures):
     AccessAttempt.objects.create(**params)
 
     # record failed attempt on this username from untrusted IP
-    params.update({
-        'ip_address': None,
-        'username': username,
-    })
-    AccessAttempt.objects.create(**params)
+    if not ALWAYS_RECORD_USER:
+        params.update({
+            'ip_address': None,
+            'username': username,
+        })
+        AccessAttempt.objects.create(**params)
 
     log.info('AXES: New login failure by %s. Creating access record.' % (ip,))
 
