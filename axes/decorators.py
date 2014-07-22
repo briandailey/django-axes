@@ -413,8 +413,10 @@ def create_new_failure_records(request, failures):
     }
 
     # record failed attempt from this IP
-    if not ALWAYS_RECORD_USER:
-        AccessAttempt.objects.create(**params)
+    if ALWAYS_RECORD_USER:
+        params['username'] = username
+
+    AccessAttempt.objects.create(**params)
 
     # record failed attempt on this username from untrusted IP
     params.update({
